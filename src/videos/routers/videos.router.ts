@@ -18,6 +18,7 @@ videosRouter
     })
     .get("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;
+
         const video = db.videos.find((v: Video) => v.id === id);
         if (!video) {
             res.status(HttpStatus.NotFound).send("No such video");
@@ -28,7 +29,7 @@ videosRouter
         const body = req.body as Partial<CreateVideoInputModel>;
         const errors = validateCreateVideoInput(body);
         if (errors.length > 0) {
-            res.status(HttpStatus.BadRequest).send(createErrorMessages(errors))
+            return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
         }
 
         const nowIso = new Date().toISOString();
@@ -56,7 +57,7 @@ videosRouter
         const body = req.body as Partial<UpdateVideoInputModel>;
         const errors = validateUpdateVideoInput(body);
         if (errors.length > 0) {
-           res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
+            return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
         }
 
         video.title = body.title!.trim();

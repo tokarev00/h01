@@ -14,21 +14,21 @@ export const videosRouter = express.Router({});
 
 videosRouter
     .get("/", async (req: express.Request, res: express.Response) => {
-        res.status(200).send(db.videos);
+        res.status(HttpStatus.Ok).send(db.videos);
     })
     .get("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;
-        const driver = db.videos.find((video: Video) => video.id === id);
-        if (!driver) {
-            res.status(HttpStatus.NotFound).send("No such video");
+        const video = db.videos.find((v: Video) => v.id === id);
+        if (!video) {
+            return res.status(HttpStatus.NotFound).send("No such video");
         }
-        res.status(200).send(driver);
+        return res.status(HttpStatus.Ok).send(video);
     })
     .post("/", async (req: express.Request, res: express.Response) => {
         const body = req.body as Partial<CreateVideoInputModel>;
         const errors = validateCreateVideoInput(body);
         if (errors.length > 0) {
-            res.status(HttpStatus.BadRequest).send(createErrorMessages(errors))
+            return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
         }
 
         const nowIso = new Date().toISOString();
@@ -44,7 +44,7 @@ videosRouter
         };
 
         db.videos.push(newVideo);
-        res.status(HttpStatus.Created).send(newVideo);
+        return res.status(HttpStatus.Created).send(newVideo);
     })
     .put("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;
@@ -56,7 +56,7 @@ videosRouter
         const body = req.body as Partial<UpdateVideoInputModel>;
         const errors = validateUpdateVideoInput(body);
         if (errors.length > 0) {
-           res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
+            return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
         }
 
         video.title = body.title!.trim();
@@ -66,7 +66,7 @@ videosRouter
         video.minAgeRestriction = body.minAgeRestriction ?? null;
         video.publicationDate = body.publicationDate!;
 
-        res.send(HttpStatus.NoContent);
+        return res.sendStatus(HttpStatus.NoContent);
     })
     .delete("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;

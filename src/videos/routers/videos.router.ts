@@ -14,7 +14,7 @@ export const videosRouter = express.Router({});
 
 videosRouter
     .get("/", async (req: express.Request, res: express.Response) => {
-        res.status(200).send(db.videos);
+        res.status(HttpStatus.Ok).send(db.videos);
     })
     .get("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;
@@ -24,6 +24,7 @@ videosRouter
             res.status(HttpStatus.NotFound).send("No such video");
         }
         res.status(200).send(video);
+
     })
     .post("/", async (req: express.Request, res: express.Response) => {
         const body = req.body as Partial<CreateVideoInputModel>;
@@ -45,7 +46,7 @@ videosRouter
         };
 
         db.videos.push(newVideo);
-        res.status(HttpStatus.Created).send(newVideo);
+        return res.status(HttpStatus.Created).send(newVideo);
     })
     .put("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;
@@ -67,7 +68,7 @@ videosRouter
         video.minAgeRestriction = body.minAgeRestriction ?? null;
         video.publicationDate = body.publicationDate!;
 
-        res.send(HttpStatus.NoContent);
+        return res.sendStatus(HttpStatus.NoContent);
     })
     .delete("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;

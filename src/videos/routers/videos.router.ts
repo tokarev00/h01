@@ -14,15 +14,17 @@ export const videosRouter = express.Router({});
 
 videosRouter
     .get("/", async (req: express.Request, res: express.Response) => {
-        res.status(200).send(db.videos);
+        res.status(HttpStatus.Ok).send(db.videos);
     })
     .get("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;
-        const driver = db.videos.find((video: Video) => video.id === id);
-        if (!driver) {
-            return res.status(HttpStatus.NotFound).send("No such video");
+
+        const video = db.videos.find((v: Video) => v.id === id);
+        if (!video) {
+            res.status(HttpStatus.NotFound).send("No such video");
         }
-        return res.status(HttpStatus.Ok).send(driver);
+        res.status(200).send(video);
+
     })
     .post("/", async (req: express.Request, res: express.Response) => {
         const body = req.body as Partial<CreateVideoInputModel>;
@@ -56,7 +58,7 @@ videosRouter
         const body = req.body as Partial<UpdateVideoInputModel>;
         const errors = validateUpdateVideoInput(body);
         if (errors.length > 0) {
-           return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
+            return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
         }
 
         video.title = body.title!.trim();

@@ -20,7 +20,7 @@ videosRouter
         const id: number = (res.locals as any).id;
         const driver = db.videos.find((video: Video) => video.id === id);
         if (!driver) {
-            res.status(HttpStatus.NotFound).send("No such video");
+            return res.status(HttpStatus.NotFound).send("No such video");
         }
         res.status(200).send(driver);
     })
@@ -28,7 +28,7 @@ videosRouter
         const body = req.body as Partial<CreateVideoInputModel>;
         const errors = validateCreateVideoInput(body);
         if (errors.length > 0) {
-            res.status(HttpStatus.BadRequest).send(createErrorMessages(errors))
+            return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
         }
 
         const nowIso = new Date().toISOString();
@@ -56,7 +56,7 @@ videosRouter
         const body = req.body as Partial<UpdateVideoInputModel>;
         const errors = validateUpdateVideoInput(body);
         if (errors.length > 0) {
-           res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
+            return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
         }
 
         video.title = body.title!.trim();

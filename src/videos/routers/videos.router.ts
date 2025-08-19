@@ -18,11 +18,12 @@ videosRouter
     })
     .get("/:id", validateIdParam, async (req: express.Request, res: express.Response) => {
         const id: number = (res.locals as any).id;
-        const driver = db.videos.find((video: Video) => video.id === id);
-        if (!driver) {
-            return res.status(HttpStatus.NotFound).send("No such video");
+
+        const video = db.videos.find((v: Video) => v.id === id);
+        if (!video) {
+            res.status(HttpStatus.NotFound).send("No such video");
         }
-        res.status(200).send(driver);
+        res.status(200).send(video);
     })
     .post("/", async (req: express.Request, res: express.Response) => {
         const body = req.body as Partial<CreateVideoInputModel>;

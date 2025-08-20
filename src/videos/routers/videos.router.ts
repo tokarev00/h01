@@ -38,7 +38,7 @@ videosRouter
             id: (db.videos.length > 0 ? db.videos[db.videos.length - 1].id : 0) + 1,
             title: body.title!.trim(),
             author: body.author!.trim(),
-            canBeDownloaded: true,
+            canBeDownloaded: false,
             minAgeRestriction: null,
             createdAt: nowIso,
             publicationDate: nowIso,

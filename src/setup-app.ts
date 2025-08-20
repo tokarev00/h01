@@ -10,7 +10,7 @@ export const setupApp = (app: Express) => {
     app.get("/", (req, res) => {
         res.status(HttpStatus.Ok).send("Hello world!");
     });
-    app.use('/api/videos', videosRouter);
-    app.use('/api/testing', testingRouter);
+    app.use('/videos', videosRouter);
+    app.use('/testing', testingRouter);
     return app;
 };

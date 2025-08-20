@@ -33,7 +33,12 @@ videosRouter
             return res.status(HttpStatus.BadRequest).send(createErrorMessages(errors));
         }
 
-        const nowIso = new Date().toISOString();
+        const now = new Date();
+        const nowIso = now.toISOString();
+
+        const publicationDate = new Date(now);
+        publicationDate.setDate(publicationDate.getDate() + 1);
+        const publicationDateIso = publicationDate.toISOString();
         const newVideo: Video = {
             id: (db.videos.length > 0 ? db.videos[db.videos.length - 1].id : 0) + 1,
             title: body.title!.trim(),
@@ -41,7 +46,7 @@ videosRouter
             canBeDownloaded: false,
             minAgeRestriction: null,
             createdAt: nowIso,
-            publicationDate: nowIso,
+            publicationDate: publicationDateIso,
             availableResolutions: body.availableResolutions as ResolutionsEnum[],
         };
 

@@ -17,7 +17,7 @@ describe('Videos API', () => {
   });
 
   it('handles full CRUD flow', async () => {
-    await request(app).get('/api/videos').expect(HttpStatus.Ok, []);
+    await request(app).get('/videos').expect(HttpStatus.Ok, []);
 
     const createData = {
       title: 'test video',
@@ -25,12 +25,12 @@ describe('Videos API', () => {
       availableResolutions: [ResolutionsEnum.P720],
     };
     const createRes = await request(app)
-      .post('/api/videos')
+      .post('/videos')
       .send(createData)
       .expect(HttpStatus.Created);
     const id = createRes.body.id;
 
-    await request(app).get(`/api/videos/${id}`).expect(HttpStatus.Ok);
+    await request(app).get(`/videos/${id}`).expect(HttpStatus.Ok);
 
     const updateData = {
       title: 'updated',
@@ -41,12 +41,12 @@ describe('Videos API', () => {
       publicationDate: new Date().toISOString(),
     };
     await request(app)
-      .put(`/api/videos/${id}`)
+      .put(`/videos/${id}`)
       .send(updateData)
       .expect(HttpStatus.NoContent);
 
     const updated = await request(app)
-      .get(`/api/videos/${id}`)
+      .get(`/videos/${id}`)
       .expect(HttpStatus.Ok);
     expect(updated.body).toMatchObject({
       title: updateData.title,
@@ -57,14 +57,14 @@ describe('Videos API', () => {
       publicationDate: updateData.publicationDate,
     });
 
-    await request(app).delete(`/api/videos/${id}`).expect(HttpStatus.NoContent);
+    await request(app).delete(`/videos/${id}`).expect(HttpStatus.NoContent);
 
-    await request(app).get(`/api/videos/${id}`).expect(HttpStatus.NotFound);
+    await request(app).get(`/videos/${id}`).expect(HttpStatus.NotFound);
   });
 
   it('validates input on create', async () => {
     const res = await request(app)
-      .post('/api/videos')
+      .post('/videos')
       .send({})
       .expect(HttpStatus.BadRequest);
     expect(res.body.errorsMessages.length).toBeGreaterThan(0);
